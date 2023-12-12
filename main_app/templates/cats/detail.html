@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Cat Details</h1>
+
+<div class="card">
+  <div class="card-content">
+    <span class="card-title">{{ cat.name }}</span>
+    <p>Breed: {{ cat.breed }}</p>
+    <!-- DTL gives us filters. Cat description is a long text field. If a user entered line breaks, then these will show in the HTML -->
+    <!-- There are many different built-in filters in DTL -->
+    <p>Description: {{ cat.description|linebreaks }}</p>
+    {% if cat.age > 0 %}
+      <p>Age: {{ cat.age }}</p>
+    {% else %}
+      <p>Age: Kitten</p>
+    {% endif %}
+  </div>
+  <div class="card-action">
+    <a href="{% url 'cats_update' cat.id %}">Update</a>
+    <a href="{% url 'cats_delete' cat.id %}">Delete</a>
+  </div>
+</div>
+{% endblock content %}
+    

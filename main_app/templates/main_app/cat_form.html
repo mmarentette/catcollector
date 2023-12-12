@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Two variables from the update; they have the same values:
+- object : current instance
+- lowercase model name : current instance
+In our case, our two variables are:
+- object
+-cat
+In the create, object's value is none. In the update, object's value is the instance. -->
+
+
+{% if object %}
+<h1>Edit <span class="teal-text">{{ object.name }}</span></h1>
+{% else %}
+<h1>Add Cat</h1>
+{% endif %}
+
+<!-- Leave our action  blank - it will make a post request to the same URL used to display it. In our case, cats/create -->
+<form action="" method="POST">
+    <!-- CSRF token is a unique identifier - confirming that this form came from our server (i.e. Django sent the form to the client) -->
+    <!-- We need to include the CSRF token in every Django form for security purposes -->
+    {% csrf_token %}
+    <table>
+        <!-- We get the form variable from our CBV (CatsCreate view function) -->
+        {{ form.as_table }}
+        <!-- Other options:form, form.as_p, form.as_ul -->
+        <!-- The form input types come from the Field types from the model -->
+    </table>
+    <button type="submit" class="btn">Submit</button>
+</form>
+
+{% endblock content %}

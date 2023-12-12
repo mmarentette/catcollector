@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1>Delete Cat</h1>
+
+<!-- object is referring to the instance you want to delete
+You would also have access to a variable called cat which has the value as object -->
+<!-- In other words, once again (same as cat_form), the two variables are (they have the same value):
+1. object
+2. lowercase model name (cat) 
+We can use either in the code below.
+i.e. cat.name or object.name
+cat.id or object.id -->
+
+<h4>Are you sure you want to delete <span class="teal-text">{{ cat.name }}</span>?</h4>
+
+<!-- Django has built-in method override, so for update and delete, we still send a post request -->
+<form action="" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Yes - delete!" class="btn">
+    <a href="{% url 'detail' cat.id %}">Cancel</a>
+</form>
+    
+{% endblock content %}
+    
