@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from .models import Cat
+from .forms import FeedingForm
 
 # Add this cats list below the imports
 # Sample data for this lesson since we don't have a model yet! Just fake data so we can learn how the render method works!
@@ -55,8 +56,29 @@ def cats_index(request):
     return render(request, 'cats/index.html', {'cats': cats})
 
 # path('cats/<int:cat_id>/', views.cats_detail, name='detail'),
-# cat_id comes from the path in the urls ^
+# cat_id comes from the path in the urls
 #  The argument in the function must match the param name
 def cats_detail(request, cat_id):
     cat = Cat.objects.get(id=cat_id)
-    return render(request, 'cats/detail.html', {'cat': cat})
+
+    # Generate an instance of your form on every request
+    # feeding_form is an instance
+    feeding_form = FeedingForm()
+    return render(request, 'cats/detail.html', {'cat': cat, 'feeding_form': feeding_form})
+
+# param cat_id must be matching with the argument of the function
+def add_feeding(request, cat_id):
+    # create a modelForm instance using the data from the form, in Django: request.POST <--- same as req.body in Express
+    form = FeedingForm(request.POST)
+    # Then we check if the form is valid (matches the model)
+    if form.is_valid():
+        # Assign the cat_id to the form
+        new_feeding = form.save(commit=False) # Creates an instance (a row to be entered into the table)
+        new_feeding.cat_id = cat_id
+        # Save that new row (new_feeding) to the database
+        new_feeding.save()
+        # The row has not ben entered into the table
+
+    # Don't forget to import redirect at the top
+    # Use redirect in the view file; use reverse in the model file
+    return redirect('detail', cat_id=cat_id)

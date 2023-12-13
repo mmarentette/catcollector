@@ -3,23 +3,70 @@
 {% block content %}
 <h1>Cat Details</h1>
 
-<div class="card">
-  <div class="card-content">
-    <span class="card-title">{{ cat.name }}</span>
-    <p>Breed: {{ cat.breed }}</p>
-    <!-- DTL gives us filters. Cat description is a long text field. If a user entered line breaks, then these will show in the HTML -->
-    <!-- There are many different built-in filters in DTL -->
-    <p>Description: {{ cat.description|linebreaks }}</p>
-    {% if cat.age > 0 %}
-      <p>Age: {{ cat.age }}</p>
-    {% else %}
-      <p>Age: Kitten</p>
-    {% endif %}
-  </div>
-  <div class="card-action">
-    <a href="{% url 'cats_update' cat.id %}">Update</a>
-    <a href="{% url 'cats_delete' cat.id %}">Delete</a>
-  </div>
+<!-- Card on the left and table on the right are both wrapped in a div with class="col s6". In Materialize (and many other grid systems, including Bootstrap), there are 12 columns, so we're actually telling CSS to take up one half of the page for each section -->
+<div class="row">
+    <div class="col s6">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ cat.name }}</span>
+                <p>Breed: {{ cat.breed }}</p>
+                <!-- DTL gives us filters. Cat description is a long text field. If a user entered line breaks, then these will show in the HTML -->
+                <!-- There are many different built-in filters in DTL -->
+                <p>Description: {{ cat.description|linebreaks }}</p>
+                {% if cat.age > 0 %}
+                <p>Age: {{ cat.age }}</p>
+                {% else %}
+                <p>Age: Kitten</p>
+                {% endif %}
+            </div>
+            <div class="card-action">
+                <a href="{% url 'cats_update' cat.id %}">Update</a>
+                <a href="{% url 'cats_delete' cat.id %}">Delete</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s6">
+
+        <form action="{% url 'add_feeding' cat.id %}" method="POST">
+            <!-- people say "c-surf" for csrf -->
+            {% csrf_token %}
+            {{ feeding_form.as_p }}
+            <button type="submit" class="btn">Add Feeding</button>
+        </form>
+
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Meal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- In DTL, it automatically calls the function, so we don't need to add () beside all - i.e. cat.feeding_set.all() is wrong -->
+                {% for feeding in cat.feeding_set.all %}
+                <tr>
+                    <td>{{ feeding.date }}</td>
+                    <td>{{ feeding.get_meal_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+<!-- We want to wait until the page (and thus, the form) has loaded -->
+<script>
+    const selectEl = document.querySelector('select');
+    M.FormSelect.init(selectEl, {});
+
+    const dateEl = document.querySelector('#id_date');
+    M.Datepicker.init(dateEl, {
+        format: 'yyyy mm dd',
+        defaultDate: new Date(),
+        setDefaultDate: true,
+        autoClose: true
+    })
+
+</script>
+
 {% endblock content %}
-    

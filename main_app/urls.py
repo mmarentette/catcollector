@@ -17,4 +17,5 @@ urlpatterns = [
     # CBVs expect pk to be the param name by convention
     path('cats/<int:pk>/update/', views.CatUpdate.as_view(), name='cats_update'),
     path('cats/<int:pk>/delete/', views.CatDelete.as_view(), name='cats_delete'),
+    path('cats/<int:cat_id>/add_feeding/', views.add_feeding, name='add_feeding'), # At first, I accidentally included parens - add_feeding() - here, but we don't do that here! We don't want to call the function until the path is matched (I think)
 ]
